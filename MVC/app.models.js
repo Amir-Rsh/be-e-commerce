@@ -36,4 +36,14 @@ const fetchClothes = async (category, collection) => {
   }
 };
 
-module.exports = { fetchClothes };
+const fetchClothesById = async (id) => {
+  try {
+    const response = await clothes.findOne({ _id: id });
+    if (!response) return Promise.reject({ msg: "item not found" });
+    return response;
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+module.exports = { fetchClothes, fetchClothesById };

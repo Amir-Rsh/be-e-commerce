@@ -44,9 +44,25 @@ describe("Tesing all the endpoints", () => {
     });
     test("404: return the correct error message when no clothes in the category", async () => {
       const response = await request(app).get("/clothes?category=gloves");
-      console.log(response.body);
       expect(response.status).toBe(404);
       expect(response.body.msg).toBe("there are no such clothes");
+    });
+    test("200: gets the clothing by the required id", async () => {
+      const response = await request(app).get("/clothes/1");
+
+      expect(response.status).toBe(200);
+      expect(response.body.clothing).toEqual({
+        _id: "1",
+        name: "vegan leather jacket",
+        collection: "winter",
+        category: "coats",
+        price: 29.99,
+      });
+    });
+    test("404: responds with the appropriate error when not found", async () => {
+      const response = await request(app).get("/clothes/50");
+      expect(response.status).toBe(404);
+      expect(response.body.msg).toBe("item not found");
     });
   });
 });
