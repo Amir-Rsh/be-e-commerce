@@ -1,3 +1,4 @@
+const { ObjectId } = require("mongodb");
 const client = require("../db/connection");
 const dbString = process.env.NODE_ENV || "production";
 const db = client.db(`${dbString}`);
@@ -38,7 +39,8 @@ const fetchClothes = async (category, collection) => {
 
 const fetchClothesById = async (id) => {
   try {
-    const response = await clothes.findOne({ _id: id });
+    if (id.length < 12) return Promise.reject({ msg: "item not found" });
+    const response = await clothes.findOne({ _id: new ObjectId(id) });
     if (!response) return Promise.reject({ msg: "item not found" });
     return response;
   } catch (error) {

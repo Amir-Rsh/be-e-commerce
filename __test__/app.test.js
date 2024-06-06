@@ -48,11 +48,13 @@ describe("Tesing all the endpoints", () => {
       expect(response.body.msg).toBe("there are no such clothes");
     });
     test("200: gets the clothing by the required id", async () => {
-      const response = await request(app).get("/clothes/1");
+      const response = await request(app).get(
+        "/clothes/60b8d295f1d2f8c1f0e8c6b1"
+      );
 
       expect(response.status).toBe(200);
       expect(response.body.clothing).toEqual({
-        _id: "1",
+        _id: "60b8d295f1d2f8c1f0e8c6b1",
         name: "vegan leather jacket",
         collection: "winter",
         category: "coats",
