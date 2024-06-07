@@ -2,10 +2,32 @@ const express = require("express");
 const bodyParser = require("body-parser");
 const cors = require("cors");
 const { getClothes, getClothesById } = require("./MVC/app.controllers");
+const env = require("dotenv").config({ path: "./.env.stripe" });
+
+const stripe = require("stripe")(process.env.STRIPE_SECRET_KEY);
 
 const app = express();
 app.use(bodyParser.json({ limit: "10mb" }));
 app.use(cors());
+
+app.get("/config", (req, res) => {
+  res.send({ publishableKey: process.env.STRIPE_PUBLISHABLE_KEY });
+});
+
+app.post("/create-payment-intent", async (req, res) => {
+  try {
+    const paymentIntent = await stripe.paymentIntents.create({
+      currency: "eur",
+      amount: 1999,
+      automatic_payment_methods: {
+        enabled: true,
+      },
+    });
+    res.send({ clientSecret: paymentIntent.client_secret });
+  } catch (err) {
+    return res.status(400).send({ error: { message: err.message } });
+  }
+});
 
 app.get("/clothes", getClothes);
 app.get("/clothes/:id", getClothesById);
